@@ -15,17 +15,31 @@ import javafx.stage.Stage;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-//MainApplication class launches the UI and integrates with database
 
+/**The main application class for the Library Management System (LMS)
+ * Provides the User with UI (JavaFx) to manage the library books.
+ */
 
 public class MainApplication extends Application {
     private DatabaseHelper dbHelper;
 
-    //Main method to launch JavaFx
+    /**
+     * The main method launches the JavaFx.
+     * @param args command-line arguments
+     */
     public static void main(String[] args) {
         launch();
     }
 
+    /**
+     * Initializes and displays primary stage for the Library Management System.
+     * This arranges the interface, event handles, and initial data.
+     *
+     * @param primaryStage the primary stage for this application, onto which
+     * the application scene can be set.
+     * Applications may create other stages, if needed, but they will not be
+     * primary stages.
+     */
     @Override
     public void start(Stage primaryStage) {
 
@@ -68,7 +82,10 @@ public class MainApplication extends Application {
         // Load initial database
         refreshBooks(tableView);
     }
-    //Setting the Tableview Columns
+    /** Setting the Tableview Columns
+     *
+     * @param tableView the TableView to be initialized
+     */
     private void initializeTableColumns(TableView<String[]> tableView) {
         // Define and add columns to the table
         String[] columnNames = {"Barcode", "Title", "Author", "Genre", "Status", "Due Date"};
@@ -80,7 +97,11 @@ public class MainApplication extends Application {
             tableView.getColumns().add(column);
         }
     }
-    //Method that refreshes the UI to provide the latest changes in the database
+
+    /** Refreshes the book display in the UI
+     *
+     * @param tableView the TableView gets updated
+     */
     private void refreshBooks(TableView<String[]> tableView) {
         tableView.getItems().clear(); // Clear existing data
         try {
@@ -100,14 +121,25 @@ public class MainApplication extends Application {
         }
     }
 
+    /**Handles the book check-out
+     *User is prompted to input barcode and updates the book status to checked out.
+     */
+
     private void handleCheckOut() {
         handleBookUpdate("Check Out Book", "Enter the Barcode to Check Out:", "checked out");
     }
+
+    /**Handles the book check-in
+     *User is prompted to input barcode and application will update the book status to "checked in".
+     */
 
     private void handleCheckIn() {
         handleBookUpdate("Check In Book", "Enter the Barcode to Check In:", "checked in");
     }
 
+    /**Handles the removal of the book from the database
+     *User is prompted to input barcode and removed the book from the database.
+     */
     private void handleRemove() {
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Remove Book");
@@ -122,6 +154,14 @@ public class MainApplication extends Application {
         }
         );
     }
+
+    /**Updates the current status of the book in the database.
+     *User is prompted to input barcode. It will update books status and due date.
+     *
+     * @param title the title of the dialog
+     * @param headerText the header of the dialog
+     * @param newStatus the status message of the dialog
+     */
 
     private void handleBookUpdate(String title, String headerText, String newStatus) {
         TextInputDialog dialog = new TextInputDialog();
@@ -141,13 +181,20 @@ public class MainApplication extends Application {
         });
     }
 
+    /**
+     * Shows alert information to provide message to user.
+     *
+     * @param message the message provides the alert message.
+     */
     private void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setContentText(message);
         alert.show();
     }
 
-    // Close database connection on application exit
+    /**
+     * Stops the application once the database is connection is closed.
+     */
     @Override
     public void stop() {
         dbHelper.closeConnection();
